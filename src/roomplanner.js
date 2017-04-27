@@ -26,9 +26,9 @@ var RoomPlanner = function (roomName) {
 
 RoomPlanner.prototype.drawDebug = function () {
   let debugSymbols = {
-    lab: '🔬',
-    tower: '⚔',
-    link: '🔗',
+    lab: 'L',
+    tower: 'T',
+    link: 'E',
   };
 
   let visual = new RoomVisual(this.roomName);
