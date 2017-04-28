@@ -72,6 +72,7 @@ Creep.prototype.performHarvest = function () {
             if (link && link.energy < link.energyCapacity) {
                 var target = source.getNearbyContainer();
                 creep.withdraw(target, RESOURCE_ENERGY);
+                creep.transferAny(link);
             }
         }
     }
