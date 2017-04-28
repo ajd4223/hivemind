@@ -135,7 +135,7 @@ Creep.prototype.getAvailableEnergySources = function () {
         var target = targets[i];
         var distanceMultiplier = 1;
         if (Game.cpu.bucket > 500) {
-            distanceMultiplier = creep.pos.findPathTo(target).length / 100
+            distanceMultiplier = 1 / creep.pos.findPathTo(target).length
         }
 
         var option = {
@@ -185,7 +185,7 @@ Creep.prototype.getAvailableEnergySources = function () {
 
         var distanceMultiplier = 1;
         if (Game.cpu.bucket > 500) {
-            distanceMultiplier = creep.pos.findPathTo(target).length / 100
+            distanceMultiplier = 1 / creep.pos.findPathTo(target).length
         }
 
         // Actually, don't use other containers, only those with harvesters are a valid source.
