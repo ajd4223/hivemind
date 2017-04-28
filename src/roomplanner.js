@@ -26,9 +26,15 @@ var RoomPlanner = function (roomName) {
 
 RoomPlanner.prototype.drawDebug = function () {
   let debugSymbols = {
+    container: 'c',
     lab: 'L',
+    link: 'l',
+    rampart: 'R',
+    spawn: 'S',
+    storage: 's',
+    terminal: 't',
     tower: 'T',
-    link: 'E',
+    wall: 'W',
   };
 
   let visual = new RoomVisual(this.roomName);
