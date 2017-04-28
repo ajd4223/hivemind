@@ -67,7 +67,7 @@ Room.prototype.getBestStorageSource = function (resourceType) {
             }
             return;
         }
-        else if ((this.storage.store[resourceType] || 0) / this.storage.storeCapacity < (this.terminal.store[resourceType]) / this.terminal.storeCapacity) {
+        else if ((this.storage.store[resourceType] || 0) / this.storage.storeCapacity < (this.terminal.store[resourceType] || 0) / this.terminal.storeCapacity) {
             if (this.memory.fillTerminal != resourceType) {
                 return this.terminal;
             }
@@ -133,9 +133,14 @@ Creep.prototype.getAvailableEnergySources = function () {
 
     for (var i in targets) {
         var target = targets[i];
+        var distanceMultiplier = 1;
+        if (Game.cpu.bucket > 500) {
+            distanceMultiplier = creep.pos.findPathTo(target).length / 100
+        }
+
         var option = {
             priority: 4,
-            weight: target.amount / 100, // @todo Also factor in distance.
+            weight: (target.amount * distanceMultiplier) / 100, // @todo Also factor in distance.
             type: 'resource',
             object: target,
             resourceType: RESOURCE_ENERGY,
@@ -162,10 +167,10 @@ Creep.prototype.getAvailableEnergySources = function () {
         options.push(option);
     }
 
-    // Look for energy in Containers.
+    // Look for energy in Containers. And if builder links too
     var targets = creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-            return (structure.structureType == STRUCTURE_CONTAINER) && structure.store[RESOURCE_ENERGY] > creep.carryCapacity * 0.1;
+            return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store[RESOURCE_ENERGY] > creep.carryCapacity * 0.1) || (structure.structureType == STRUCTURE_LINK && structure.energy > creep.carryCapacity * 0.1);
         }
     });
 
@@ -173,15 +178,20 @@ Creep.prototype.getAvailableEnergySources = function () {
     for (var i in targets) {
         var target = targets[i];
 
-        // Don't use the controller container as a normal source.
-        if (target.id == target.room.memory.controllerContainer) {
+        // Don't use the controller container as a normal source. // Builders ignore this
+        if (target.id == target.room.memory.controllerContainer && creep.role != 'builder') {
             continue;
+        }
+
+        var distanceMultiplier = 1;
+        if (Game.cpu.bucket > 500) {
+            distanceMultiplier = creep.pos.findPathTo(target).length / 100
         }
 
         // Actually, don't use other containers, only those with harvesters are a valid source.
         var option = {
             priority: -1,
-            weight: target.store[RESOURCE_ENERGY] / 100, // @todo Also factor in distance.
+            weight: ((target.store ? target.store[RESOURCE_ENERGY] : target.energy) * distanceMultiplier) / 100, // @todo Also factor in distance.
             type: 'structure',
             object: target,
             resourceType: RESOURCE_ENERGY,
@@ -191,7 +201,7 @@ Creep.prototype.getAvailableEnergySources = function () {
             for (var id in target.room.memory.sources) {
                 if (target.room.memory.sources[id].targetContainer && target.room.memory.sources[id].targetContainer == target.id) {
                     option.priority = 2;
-                    if (_.sum(target.store) >= creep.carryCapacity - _.sum(creep.carry)) {
+                    if (target.store && _.sum(target.store) >= creep.carryCapacity - _.sum(creep.carry)) {
                         // This container is filling up, prioritize emptying it.
                         option.priority += 2;
                     }
