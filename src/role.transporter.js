@@ -165,7 +165,8 @@ Creep.prototype.getAvailableEnergySources = function () {
     // Look for energy in Containers.
     var targets = creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-            return (structure.structureType == STRUCTURE_CONTAINER) && structure.store[RESOURCE_ENERGY] > creep.carryCapacity * 0.1;
+            return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > creep.carryCapacity * 0.1)
+            || (creep.memory.role == 'builder' && structure.structureType == STRUCTURE_LINK && structure.energy > creep.carryCapacity * 0.1); // Allow builders to take what they please.
         }
     });
 
@@ -174,7 +175,7 @@ Creep.prototype.getAvailableEnergySources = function () {
         var target = targets[i];
 
         // Don't use the controller container as a normal source.
-        if (target.id == target.room.memory.controllerContainer) {
+        if (target.id == target.room.memory.controllerContainer && creep.memory.role != 'builder') {
             continue;
         }
 
