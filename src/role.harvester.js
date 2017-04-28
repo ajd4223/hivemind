@@ -45,7 +45,7 @@ Creep.prototype.performHarvest = function () {
     }
 
     // If the source is empty, pickup any dropped energy.
-    if (source.energy == 0) {
+    if (source.energy == 0 && _.sum(creep.carry) < creep.carryCapacity) {
         var resource;
         let resources = creep.pos.findInRange(FIND_DROPPED_ENERGY, 3, {
             filter: (resource) => resource.resourceType == RESOURCE_ENERGY
@@ -64,6 +64,15 @@ Creep.prototype.performHarvest = function () {
                 creep.pickup(resource);
             }
             actionTaken = true;
+        }
+
+        else {
+            // if the nearby link isn't full fill it from the container.
+            let link = source.getNearbyLink();
+            if (link && link.energy < link.energyCapacity) {
+                var target = source.getNearbyContainer();
+                creep.withdraw(target, RESOURCE_ENERGY);
+            }
         }
     }
 
