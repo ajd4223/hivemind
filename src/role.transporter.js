@@ -179,19 +179,19 @@ Creep.prototype.getAvailableEnergySources = function () {
         var target = targets[i];
 
         // Don't use the controller container as a normal source. // Builders ignore this
-        if (target.id == target.room.memory.controllerContainer && creep.role != 'builder') {
+        if (target.id == target.room.memory.controllerContainer && creep.memory.role != 'builder' && creep.memory.role != 'upgrader') {
             continue;
         }
 
         var distanceMultiplier = 1;
         if (Game.cpu.bucket > 500) {
-            distanceMultiplier = 1 / creep.pos.findPathTo(target).length
+            distanceMultiplier = 1 / creep.pos.findPathTo(target).length // Not really happy with this method but works~ish for now.
         }
 
         // Actually, don't use other containers, only those with harvesters are a valid source.
         var option = {
             priority: -1,
-            weight: ((target.store ? (target.store[RESOURCE_ENERGY] > creep.carryCapacity - _.sum(creep.carry) ? creep.carryCapacity - _.sum(creep.carry) : target.store[RESOURCE_ENERGY]) : (target.energy > creep.carryCapacity - _.sum(creep.carry) ? creep.carryCapacity - _.sum(creep.carry) : target.energy)) * distanceMultiplier) / 100, // @todo Also factor in distance.
+            weight: ((target.store ? (target.store[RESOURCE_ENERGY] > creep.carryCapacity - _.sum(creep.carry) ? creep.carryCapacity - _.sum(creep.carry) : target.store[RESOURCE_ENERGY]) : (target.energy > creep.carryCapacity - _.sum(creep.carry) ? creep.carryCapacity - _.sum(creep.carry) : target.energy)) * distanceMultiplier) / 100,
             type: 'structure',
             object: target,
             resourceType: RESOURCE_ENERGY,
