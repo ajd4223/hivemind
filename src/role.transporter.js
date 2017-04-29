@@ -140,7 +140,7 @@ Creep.prototype.getAvailableEnergySources = function () {
 
         var option = {
             priority: 4,
-            weight: (target.amount * distanceMultiplier) / 100, // @todo Also factor in distance.
+            weight: ((target.amount > creep.carryCapacity - _.sum(creep.carry) ? creep.carryCapacity - _.sum(creep.carry) : target.amount) * distanceMultiplier) / 100, // Factor in distance and if there is more amount that what we can carry it should out weigh distance.
             type: 'resource',
             object: target,
             resourceType: RESOURCE_ENERGY,
@@ -191,7 +191,7 @@ Creep.prototype.getAvailableEnergySources = function () {
         // Actually, don't use other containers, only those with harvesters are a valid source.
         var option = {
             priority: -1,
-            weight: ((target.store ? target.store[RESOURCE_ENERGY] : target.energy) * distanceMultiplier) / 100, // @todo Also factor in distance.
+            weight: ((target.store ? (target.store[RESOURCE_ENERGY] > creep.carryCapacity - _.sum(creep.carry) ? creep.carryCapacity - _.sum(creep.carry) : target.store[RESOURCE_ENERGY]) : (target.energy > creep.carryCapacity - _.sum(creep.carry) ? creep.carryCapacity - _.sum(creep.carry) : target.energy)) * distanceMultiplier) / 100, // @todo Also factor in distance.
             type: 'structure',
             object: target,
             resourceType: RESOURCE_ENERGY,
@@ -697,7 +697,7 @@ Creep.prototype.getAvailableDeliveryTargets = function () {
             let canDeliver = Math.min(creep.carry.energy, target.energyCapacity - target.energy);
 
             let option = {
-                priority: 5,
+                priority: (target.structureType == STRUCTURE_TOWER ? 11:5),
                 weight: canDeliver / creep.carryCapacity,
                 type: 'structure',
                 object: target,

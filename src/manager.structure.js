@@ -53,6 +53,30 @@ StructureTower.prototype.runLogic = function () {
     if (damaged) {
         tower.heal(damaged);
     }
+
+    // If we aren't doing anything else and have enough backup energy why not repair things?
+    if(!closestHostileHealer && !closestHostile && !damaged && tower.energy > tower.energyCapacity * 0.8) {
+        var damagedStructures = tower.pos.findInRange(FIND_STRUCTURES, 20,{
+            filter: (structure) => {
+                return (structure.hits < structure.hitsMax);
+            }
+        });
+        var mostDamage = 1;
+        var mostDamagedStructure;
+        for(var structure in damagedStructures) {
+            if(!mostDamagedStructure) {
+                mostDamagedStructure = damagedStructures[structure];
+                mostDamage = damagedStructures[structure].hits / damagedStructures[structure].hitsMax
+            }
+            else if (mostDamage > damagedStructures[structure].hits / damagedStructures[structure].hitsMax) {
+                mostDamagedStructure = damagedStructures[structure];
+                mostDamage = damagedStructures[structure].hits / damagedStructures[structure].hitsMax                
+            }
+        }
+        if (mostDamagedStructure) {
+            tower.repair(mostDamagedStructure);
+        }
+    }
 };
 
 Room.prototype.manageLabs = function () {
