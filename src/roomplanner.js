@@ -127,7 +127,7 @@ RoomPlanner.prototype.runLogic = function () {
   if (roomSpawns.length == CONTROLLER_STRUCTURES[STRUCTURE_SPAWN][this.room.controller.level] && roomConstructionSites.length == 0) {
     for (let i = 0; i < roomSpawns.length; i++) {
       let spawn = roomSpawns[i];
-      if (!this.memory.locations.spawn[utilities.encodePosition(spawn.pos)]) {
+      if (this.memory.locations.spawn && !this.memory.locations.spawn[utilities.encodePosition(spawn.pos)]) {
         // Only destroy spawn if there are enough resources and builders available.
         let resourcesAvailable = (this.room.storage && this.room.storage.store.energy > CONSTRUCTION_COST[STRUCTURE_SPAWN] * 2 && _.size(this.room.creepsByRole.builder) > 1);
         if ((resourcesAvailable || _.size(roomSpawns) > 1)) {
@@ -214,7 +214,7 @@ RoomPlanner.prototype.runLogic = function () {
   var roomExtensionSites = _.filter(roomConstructionSites, (site) => site.structureType == STRUCTURE_EXTENSION);
   for (let i = 0; i < roomExtensions.length; i++) {
     let extension = roomExtensions[i];
-    if (!this.memory.locations.extension[utilities.encodePosition(extension.pos)] && roomExtensions.length > CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][this.room.controller.level] - 5) {
+    if (this.memory.locations.extension && !this.memory.locations.extension[utilities.encodePosition(extension.pos)] && roomExtensions.length > CONTROLLER_STRUCTURES[STRUCTURE_EXTENSION][this.room.controller.level] - 5) {
       extension.destroy();
 
       // Only kill of one extension for each call of runLogic, it takes a while to rebuild anyway.
@@ -814,14 +814,14 @@ RoomPlanner.prototype.placeFlags = function (visible) {
   }
 
   // Decide where room center should be by averaging exit positions.
-  let cx = 0;
-  let cy = 0;
+  let cx = 49;
+  let cy = 49;
   let count = 0;
   for (let dir in exitCenters) {
     for (let i in exitCenters[dir]) {
       count++;
-      cx += exitCenters[dir][i].x;
-      cy += exitCenters[dir][i].y;
+      cx -= exitCenters[dir][i].x;
+      cy -= exitCenters[dir][i].y;
     }
   }
   cx = Math.floor(cx / count);
