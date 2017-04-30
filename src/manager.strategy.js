@@ -2,6 +2,8 @@ var utilities = require('utilities');
 var stats = require('stats');
 var Squad = require('manager.squad');
 
+var roomBlackList = [];
+
 var strategyManager = {
 
   runLogic: function () {
@@ -17,6 +19,7 @@ var strategyManager = {
     // @todo Add harvestPriority for rooms with harvest flags.
     for (let roomName in roomList) {
       let info = roomList[roomName];
+      if(roomBlackList.indexOf(roomName) >= 0) continue;
 
       info.scoutPriority = 0;
       info.expansionScore = 0;
@@ -77,6 +80,7 @@ var strategyManager = {
 
           if (!intel.hasController) continue;
           if (intel.owner) continue;
+          if (roomBlackList.indexOf(roomName) >= 0) continue;
           if (Memory.rooms[info.origin].intel.rcl < 5) continue;
 
           expansionScore += intel.sources.length;
