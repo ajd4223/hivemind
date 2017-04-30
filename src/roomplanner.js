@@ -816,19 +816,21 @@ RoomPlanner.prototype.placeFlags = function (visible) {
   // Decide where room center should be by averaging exit positions.
   let cx = 27;
   let cy = 27;
-  for (let dir in exitCenters) {
-    for (let i in exitCenters[dir]) {
-      if(exitCenters[dir][i].x > cx) {
+  for (let dir in exits) {
+    for (let i in exits[dir]) {
+      if(exits[dir][i].x > 25) {
         cx -= 1;
       }
-      else {
+
+      else if(exits[dir][i].x <26) {
         cx += 1;
       }
-      
-      if(exitCenters[dir][i].y > cy) {
+
+      if(exits[dir][i].y > 25) {
         cy -= 1;
       }
-      else {
+
+      else if(exits[dir][i].y <26) {
         cy += 1;
       }
     }
