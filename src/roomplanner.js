@@ -814,18 +814,25 @@ RoomPlanner.prototype.placeFlags = function (visible) {
   }
 
   // Decide where room center should be by averaging exit positions.
-  let cx = 49;
-  let cy = 49;
-  let count = 0;
+  let cx = 27;
+  let cy = 27;
   for (let dir in exitCenters) {
     for (let i in exitCenters[dir]) {
-      count++;
-      cx -= exitCenters[dir][i].x;
-      cy -= exitCenters[dir][i].y;
+      if(exitCenters[dir][i].x > cx) {
+        cx -= 1;
+      }
+      else {
+        cx += 1;
+      }
+      
+      if(exitCenters[dir][i].y > cy) {
+        cy -= 1;
+      }
+      else {
+        cy += 1;
+      }
     }
   }
-  cx = Math.floor(cx / count);
-  cy = Math.floor(cy / count);
 
   // Find closest position with distance from walls around there.
   let roomCenter = (new RoomPosition(cx, cy, this.roomName)).findClosestByRange(centerPositions);
