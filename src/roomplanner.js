@@ -35,6 +35,7 @@ RoomPlanner.prototype.drawDebug = function () {
     terminal: 't',
     tower: 'T',
     wall: 'W',
+    //extension: 'E',
   };
 
   let visual = new RoomVisual(this.roomName);
@@ -1074,6 +1075,7 @@ RoomPlanner.prototype.placeFlags = function (visible) {
       if (!tileFreeForBuilding(nextPos.x + 1, nextPos.y)) continue;
       if (!tileFreeForBuilding(nextPos.x, nextPos.y - 1)) continue;
       if (!tileFreeForBuilding(nextPos.x, nextPos.y + 1)) continue;
+      // Corners
       if (!tileFreeForBuilding(nextPos.x - 1, nextPos.y - 1)) continue;
       if (!tileFreeForBuilding(nextPos.x + 1, nextPos.y - 1)) continue;
       if (!tileFreeForBuilding(nextPos.x - 1, nextPos.y + 1)) continue;
@@ -1093,6 +1095,9 @@ RoomPlanner.prototype.placeFlags = function (visible) {
       for (let dx = -1; dx <= 1; dx++) {
         for (let dy = -1; dy <= 1; dy++) {
           if (!tileFreeForBuilding(nextPos.x + dx, nextPos.y + dy)) continue;
+
+          // Lets not place in the corners
+          if ((dy == -1 || dy == 1) && (dx == -1 || dx == 1)) continue;
 
           this.placeFlag(new RoomPosition(nextPos.x + dx, nextPos.y + dy, nextPos.roomName), 'extension', visible);
           matrix.set(nextPos.x + dx, nextPos.y + dy, 255);
