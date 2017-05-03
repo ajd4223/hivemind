@@ -155,10 +155,10 @@ Creep.prototype.getAvailableEnergySources = function () {
             }
         }
         else {
-            if (target.amount < 100) {
+            if (target.amount < 100 && target.amount < creep.carryCapacity - _.sum(creep.carry)) {
                 option.priority--;
             }
-            if (target.amount < 200) {
+            if (target.amount < 200 && target.amount < creep.carryCapacity - _.sum(creep.carry)) {
                 option.priority--;
             }
             option.priority -= creepGeneral.getCreepsWithOrder('getEnergy', target.id, creep.room).length * 3;
