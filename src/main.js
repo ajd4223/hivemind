@@ -65,6 +65,12 @@ try {
       relations.allies.push(localRelations.allies[i]);
     }
   }
+
+  if (localRelations.enemies) {
+    for (var i in localRelations.enemies) {
+      relations.enemies.push(localRelations.enemies[i]);
+    }
+  }
 }
 catch (e) {
   // No local relations declared, ignore.
