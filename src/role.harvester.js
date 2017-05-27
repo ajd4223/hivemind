@@ -47,7 +47,7 @@ Creep.prototype.performHarvest = function () {
     // If the source is empty, pickup any dropped energy.
     if (source.energy == 0 && _.sum(creep.carry) < creep.carryCapacity) {
         var resource;
-        let resources = creep.pos.findInRange(FIND_DROPPED_RESOURCE, 3, {
+        let resources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 3, {
             filter: (resource) => resource.resourceType == RESOURCE_ENERGY
         });
         if (resources.length > 0) {
